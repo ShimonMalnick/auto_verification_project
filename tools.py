@@ -28,3 +28,23 @@ def torch2marabou_onnx(config: Dict, model_loader: Callable):
                       output_names=['output'],  # the model's output names
                       dynamic_axes={'input': {0: 'batch_size'},  # variable length axes
                                     'output': {0: 'batch_size'}})
+
+
+def convert_h52onnx(model_path: str, arc: List, out_path: str):
+    """
+    A tool to convert h5 keras saved models used in the FGP paper to onnx, which can later be used with the Marabou
+    framework.
+    :param model_path: path to the .h5 file storing the model (models under models.fgp)
+    :param arc: architecture of the network (by the file name, e.g mnist-20.20.20.h5 expects a list [20, 20, 20])
+    :param out_path: the output saving path
+    """
+    from models.fgp.checkable_models import CheckableModel
+    from tensorflow.keras import Model
+    import keras2onnx
+    checkable_model = CheckableModel((28 * 28,), arc, 10)
+    original_model = checkable_model.model
+    original_model.load_weights(model_path)
+    # removing last layer as it is a softmax activation layer which isn't supported in onnx Marabou
+    model2 = Model(inputs=original_model.input, outputs=original_model.layers[-2].output)
+    onnx_model = keras2onnx.convert_keras(model2, model2.name)
+    keras2onnx.save_model(onnx_model, out_path)

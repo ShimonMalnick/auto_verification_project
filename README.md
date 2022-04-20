@@ -32,5 +32,5 @@ python verify_pytorch_net.py --help
 To see the documentation on the relevant parameters.\
 To reproduce results for *My Own DNN* from the project run:
 ```
-python verify_pytorch_net.py both 784
+python verify_pytorch_net.py convert 784 ./tmp.onnx && python verify_pytorch_net.py verify ./tmp.onnx 784
 ```
