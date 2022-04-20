@@ -1,9 +1,9 @@
 from torch import nn
 
 
-class PytorchNet(nn.Module):
+class MyOwnNet(nn.Module):
     def __init__(self):
-        super(PytorchNet, self).__init__()
+        super(MyOwnNet, self).__init__()
         self.fc1 = nn.Linear(28 * 28, 40)
         self.fc2 = nn.Linear(40, 40)
         self.fc3 = nn.Linear(40, 40)
